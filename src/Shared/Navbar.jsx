@@ -7,7 +7,7 @@ const Navbar = () => {
             <div className="container mx-auto flex justify-between items-center px-6 py-3">
                 {/* Logo */}
                 <div className="text-2xl font-bold">
-                    <Link to="/">MyApp</Link>
+                    <Link to="/">Authentication</Link>
                 </div>
 
                 {/* Menu Links */}
