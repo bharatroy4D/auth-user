@@ -7,6 +7,7 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null); // logged in user info
   const [loading, setLoading] = useState(true);
+  console.log("login user",user);
 
   // Login
   const login = async (data) => {
@@ -39,10 +40,14 @@ export const AuthProvider = ({ children }) => {
   };
 
   // Logout
-  const logout = () => {
-    localStorage.removeItem("token");
-    setUser(null);
+  const logout = async () => {
+    return new Promise((resolve) => {
+      localStorage.removeItem("token");
+      setUser(null);
+      resolve();
+    });
   };
+
 
   // Load user if token exists
   useEffect(() => {
@@ -71,5 +76,4 @@ export const AuthProvider = ({ children }) => {
 };
 
 // custom hook
-// export const useAuth = () => useContext(AuthContext);
 export const useAuth = () => useContext(AuthContext)

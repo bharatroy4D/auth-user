@@ -20,7 +20,7 @@ const Signup = () => {
     setLoading(true);
     try {
       await signup(form); // backend থেকে token + user আসবে
-      navigate("/dashboard");
+      navigate("/");
     } catch (err) {
       setError(err.message || "Signup failed");
     } finally {
