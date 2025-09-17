@@ -6,8 +6,9 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null); // logged in user info
+  const [mode, setMode] = useState('light');
   const [loading, setLoading] = useState(true);
-  console.log("login user",user);
+
 
   // Login
   const login = async (data) => {
@@ -68,8 +69,12 @@ export const AuthProvider = ({ children }) => {
     loadUser();
   }, []);
 
+  const toggleTheme = () => {
+    setMode(prev => (prev === 'light' ? 'dark' : 'light'))
+  }
+
   return (
-    <AuthContext.Provider value={{ user, loading, login, signup, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, signup, logout, mode, toggleTheme }}>
       {children}
     </AuthContext.Provider>
   );

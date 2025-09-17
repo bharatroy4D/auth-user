@@ -1,4 +1,3 @@
-// src/pages/Login.jsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
@@ -8,7 +7,7 @@ const Login = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, mode } = useAuth(); // 👈 mode import
 
   // handle input change
   const handleChange = (e) => {
@@ -31,15 +30,21 @@ const Login = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-sm">
-        <h2 className="text-2xl text-black font-bold text-center mb-6">
-          Login
-        </h2>
+    <div
+      className={`flex items-center justify-center min-h-screen transition ${
+        mode === "light" ? "bg-gray-100" : "bg-gray-900"
+      }`}
+    >
+      <div
+        className={`p-8 rounded-2xl shadow-lg w-full max-w-sm transition ${
+          mode === "light" ? "bg-white text-black" : "bg-gray-800 text-white"
+        }`}
+      >
+        <h2 className="text-2xl font-bold text-center mb-6">Login</h2>
 
         {/* Error message */}
         {error && (
-          <p className="text-red-600 text-center mb-4 font-medium">{error}</p>
+          <p className="text-red-500 text-center mb-4 font-medium">{error}</p>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-5">
@@ -53,7 +58,12 @@ const Login = () => {
               onChange={handleChange}
               placeholder="Enter your email"
               required
-              className="w-full px-4 py-2 border-2 text-black border-gray-400 rounded-lg focus:border-blue-600 focus:ring-2 focus:ring-blue-400 outline-none"
+              className={`w-full px-4 py-2 border-2 rounded-lg focus:ring-2 outline-none transition
+                ${
+                  mode === "light"
+                    ? "text-black border-gray-400 focus:border-blue-600 focus:ring-blue-400"
+                    : "text-white border-gray-600 bg-gray-700 focus:border-yellow-400 focus:ring-yellow-500"
+                }`}
             />
           </div>
 
@@ -67,7 +77,12 @@ const Login = () => {
               onChange={handleChange}
               placeholder="Enter your password"
               required
-              className="w-full px-4 py-2 border-2 text-black border-gray-400 rounded-lg focus:border-blue-600 focus:ring-2 focus:ring-blue-400 outline-none"
+              className={`w-full px-4 py-2 border-2 rounded-lg focus:ring-2 outline-none transition
+                ${
+                  mode === "light"
+                    ? "text-black border-gray-400 focus:border-blue-600 focus:ring-blue-400"
+                    : "text-white border-gray-600 bg-gray-700 focus:border-yellow-400 focus:ring-yellow-500"
+                }`}
             />
           </div>
 
@@ -75,9 +90,14 @@ const Login = () => {
           <button
             type="submit"
             disabled={loading}
-            className={`w-full bg-blue-600 text-white py-2 rounded-lg transition ${
-              loading ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-700"
-            }`}
+            className={`w-full py-2 rounded-lg font-semibold transition
+              ${
+                loading
+                  ? "opacity-50 cursor-not-allowed"
+                  : mode === "light"
+                  ? "bg-blue-600 text-white hover:bg-blue-700"
+                  : "bg-yellow-500 text-gray-900 hover:bg-yellow-400"
+              }`}
           >
             {loading ? "Logging in..." : "Login"}
           </button>
