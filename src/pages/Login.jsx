@@ -7,7 +7,7 @@ const Login = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { login, mode } = useAuth(); // 👈 mode import
+  const { login, mode,sendOptContex } = useAuth(); // 👈 mode import
 
   // handle input change
   const handleChange = (e) => {
@@ -21,7 +21,8 @@ const Login = () => {
     setLoading(true);
     try {
       await login(form); // AuthContext → loginUser API call হবে
-      navigate("/dashboard"); // সফল হলে Dashboard এ যাবে
+      sendOptContex({email:form.email})
+      navigate("/otp"); 
     } catch (err) {
       setError(err.message || "Login failed");
     } finally {

@@ -1,11 +1,14 @@
-// src/pages/OTPPage.jsx
 import { useState, useRef } from "react";
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export default function OTPPage() {
   const [otp, setOtp] = useState(new Array(6).fill(""));
   const [timeLeft, setTimeLeft] = useState(60); // 60 sec timer
   const [isResendDisabled, setIsResendDisabled] = useState(true);
   const inputsRef = useRef([]);
+  const { user, verifyOtpContex, mode, toggleTheme } = useAuth();
+  const navigate = useNavigate();
 
   // OTP Change
   const handleChange = (e, idx) => {
@@ -39,14 +42,21 @@ export default function OTPPage() {
   };
 
   // Verify button click
-  const handleVerify = () => {
-    const enteredOtp = otp.join("");
-    if (enteredOtp.length < 6) {
-      alert("Please enter full 6-digit OTP.");
-      return;
+  const handleVerify = async () => {
+    try {
+      const data = {
+        email: user.email,
+        otp,
+      };
+      const res = await verifyOtpContex(data);
+      console.log(res);
+      if (res.status == 200) {
+        navigate("/dashboard");
+      }
+      return res;
+    } catch (err) {
+      console.log(err);
     }
-    // এখানে API call করতে পারেন (POST /verify-otp)
-    alert(`Your OTP is: ${enteredOtp}`);
   };
 
   // Clear button
@@ -81,13 +91,32 @@ export default function OTPPage() {
     return () => clearInterval(interval);
   }, []);
 
+  // Theme অনুযায়ী className
+  const containerClass =
+    mode === "light"
+      ? "bg-gray-50 text-gray-800"
+      : "bg-gray-900 text-gray-100";
+
+  const cardClass =
+    mode === "light"
+      ? "bg-white shadow-lg"
+      : "bg-gray-800 shadow-md border border-gray-700";
+
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-50">
-      <div className="w-full max-w-md bg-white shadow-lg rounded-2xl p-8">
-        <h2 className="text-2xl font-bold text-center text-gray-800">
-          Verify Your OTP
-        </h2>
-        <p className="text-gray-500 text-center mt-2">
+    <div className={`flex justify-center items-center h-screen ${containerClass}`}>
+      <div className={`w-full max-w-md rounded-2xl p-8 ${cardClass}`}>
+        <div className="flex justify-center items-center mb-4">
+          <h2 className="text-2xl font-bold ">Verify Your OTP</h2>
+          {/* Theme toggle button */}
+          {/* <button
+            onClick={toggleTheme}
+            className="px-3 py-1 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
+          >
+            {mode === "light" ? "Dark" : "Light"}
+          </button> */}
+        </div>
+
+        <p className="text-sm opacity-80 text-center">
           Please enter the 6-digit OTP sent to your email/phone.
         </p>
 
@@ -102,7 +131,11 @@ export default function OTPPage() {
               value={digit}
               onChange={(e) => handleChange(e, idx)}
               onKeyDown={(e) => handleKeyDown(e, idx)}
-              className="w-12 h-12 text-center text-lg font-semibold border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className={`w-12 h-12 text-center text-lg font-semibold border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                mode === "light"
+                  ? "border-gray-300 bg-white text-gray-800"
+                  : "border-gray-600 bg-gray-700 text-gray-100"
+              }`}
             />
           ))}
         </div>
@@ -117,7 +150,11 @@ export default function OTPPage() {
           </button>
           <button
             onClick={handleClear}
-            className="w-full py-2 bg-gray-200 text-gray-700 font-semibold rounded-lg shadow hover:bg-gray-300 transition"
+            className={`w-full py-2 font-semibold rounded-lg shadow transition ${
+              mode === "light"
+                ? "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                : "bg-gray-700 text-gray-200 hover:bg-gray-600"
+            }`}
           >
             Clear
           </button>
@@ -126,14 +163,14 @@ export default function OTPPage() {
         {/* Resend OTP */}
         <div className="mt-4 text-center">
           {isResendDisabled ? (
-            <p className="text-sm text-gray-500">
+            <p className="text-sm opacity-70">
               Resend available in{" "}
               <span className="font-bold">{timeLeft}s</span>
             </p>
           ) : (
             <button
               onClick={handleResend}
-              className="text-blue-600 font-semibold hover:underline"
+              className="text-blue-500 font-semibold hover:underline"
             >
               Resend OTP
             </button>

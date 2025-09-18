@@ -35,3 +35,21 @@ export const getCurrentUser = async (token) => {
     }
 }
 
+export const sendOtp=async(data)=>{
+    try{
+        const res=await API.post('/authentication_app/resend_otp/',data)
+        return res
+    }catch(err){
+        throw err.response?.data||{message:'otp send faild'}
+    }
+}
+
+
+export const verifyOtp=async(data)=>{
+    try{
+        const res=await API.post('/authentication_app/verify_otp/',data)
+        return res
+    }catch(err){
+        console.log(err);
+    }
+}

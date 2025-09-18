@@ -66,12 +66,7 @@ const Navbar = () => {
                         Home
                     </Link>
                     {user ? (
-                        <button
-                            onClick={handleLogout}
-                            className="px-3 py-1 rounded bg-red-500 hover:bg-red-600 text-white"
-                        >
-                            Logout
-                        </button>
+                       ''
                     ) : (
                         <Link to="/login" className="hover:text-gray-200">
                             Login

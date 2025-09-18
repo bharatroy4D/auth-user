@@ -1,6 +1,6 @@
 // src/context/AuthContext.js
 import { createContext, useContext, useState, useEffect } from "react";
-import { loginUser, signupUser, getCurrentUser } from "../api/authApi";
+import { loginUser, signupUser, getCurrentUser, sendOtp, verifyOtp } from "../api/authApi";
 
 const AuthContext = createContext();
 
@@ -49,6 +49,23 @@ export const AuthProvider = ({ children }) => {
     });
   };
 
+  const sendOptContex=async(data)=>{
+    try{
+      const res=await sendOtp(data)
+      return res
+    }catch(err){
+      console.log(err);
+      
+    }
+  }
+  const verifyOtpContex=async(data)=>{
+    try{
+      const res=await verifyOtp(data)
+      return res
+    }catch(err){
+      console.log(err);
+    }
+  }
 
   // Load user if token exists
   useEffect(() => {
@@ -74,7 +91,7 @@ export const AuthProvider = ({ children }) => {
   }
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, signup, logout, mode, toggleTheme }}>
+    <AuthContext.Provider value={{verifyOtpContex,sendOptContex, user, loading, login, signup, logout, mode, toggleTheme }}>
       {children}
     </AuthContext.Provider>
   );
